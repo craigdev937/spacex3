@@ -1,18 +1,20 @@
 import React from "react";
 import { AppProps } from "next/app";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query-devtools";
 import "../styles/globals.css";
 
-const RQClient = new QueryClient();
-
 export default function
 App({ Component, pageProps }: AppProps) {
+    const RQClient = React.useRef(new QueryClient());
+
     return (
         <React.StrictMode>
-            <QueryClientProvider client={RQClient}>
-                <Component {...pageProps} />
-                <ReactQueryDevtools initialIsOpen={false} />
+            <QueryClientProvider client={RQClient.current}>
+                <Hydrate state={pageProps.dehydratedState}>
+                    <Component {...pageProps} />
+                    <ReactQueryDevtools initialIsOpen={false} />
+                </Hydrate>
             </QueryClientProvider>
         </React.StrictMode>
     );
