@@ -1,11 +1,12 @@
 import React from "react";
 import Image from "next/image";
+import { GetStaticProps } from "next";
 import { dehydrate, QueryClient, useQuery } from "react-query";
 import { ISpace } from "../types/ISpace";
 import { getData } from "../global/FetchAPI";
 
-export default function Index(): JSX.Element {
-    const { isLoading, error, isFetching, data } = 
+export default function Index() {
+    const { isLoading, error, data } = 
     useQuery<ISpace, Error>(["spacex"], getData);
 
     if (isLoading) return <aside>Loading...</aside>;
@@ -26,7 +27,7 @@ export default function Index(): JSX.Element {
     );
 };
 
-export async function getStaticProps() {
+export const getStaticProps: GetStaticProps = async () => {
     const QClient = new QueryClient();
     await QClient.prefetchQuery<ISpace, Error>(["spacex"], getData);
     return {
